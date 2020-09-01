@@ -358,6 +358,8 @@ def stock_filter(stock_list):
         CW = "https://xueqiu.com/snowman/S/{}/detail#/ZYCWZB".format(stock_code)
         glc = 'https://xueqiu.com/snowman/S/{}/detail#/GSGG'.format(stock_code)
 
+        print('There are/is {} left!'.format(len(stock_list)-i))
+
         try:
             b = Stock(XQ)
             b.basic_info()
@@ -375,6 +377,9 @@ def stock_filter(stock_list):
         if financial_data['write']:
             index += 1
     excel.save("result_{}.xls".format(time.time()))
+    with open('failed.json', 'w') as f:
+        json.dump(NOT_PROCSSED, f)
+
 
 if __name__ == '__main__':
 
