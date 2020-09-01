@@ -202,6 +202,7 @@ class Stock(object):
         self.data['write'] = False
 
         print(self.data['name'] + ' Done!')
+        print(time.ctime())
 
         # 股票筛选
 
@@ -310,6 +311,8 @@ def list_sum(L):
         if '%' in i:
             #i.replace('%', '')
             i = i[:-1]
+            if '万' in i:
+                i = i[:-1]
         if '万亿' in i:
             i = i[:-2] * 10000
         elif '亿' in i:
@@ -411,15 +414,18 @@ if __name__ == '__main__':
     # print('###############科创板结束###############')
     # exit(1)
 
+    # l = ['688180']
+    # stock_filter(l)
+    # exit(1)
 
     #从文件中读取股票代码
-    # sh = get_code_list('上证.json')
-    # sz = get_code_list('深证.json')
-    kcb = get_code_list('科创板.json')
+    sh = get_code_list('上证.json')
+    sz = get_code_list('深证.json')
+    # kcb = get_code_list('科创板.json')
     # cyb = get_code_list('创业板.json')
 
-    stock_filter(kcb)
-    # stock_filter(sz)
+    stock_filter(sh)
+    stock_filter(sz)
     # stock_filter(kcb)
     # stock_filter(cyb)
 
