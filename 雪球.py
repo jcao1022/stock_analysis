@@ -194,12 +194,21 @@ class Stock(object):
         index12 = financial_datas.index('净资产收益率')
         self.data['ROE'] = list_sum(financial_datas[index12 + 1: index12 + report_years + 1])[0]/report_years
 
-        if '万亿' in self.data['market_value'][:-2]:
+        if '万亿' in self.data['market_value']:
             self.data['market_value'] = float(self.data['market_value'][:-2])*10000
-            self.data['value_coefficient'] = float(self.data['market_value'])/float(profit[0][:-1])
+            profit_ =profit[0][:-1]
+            if "亿" in self.data['market_value'] and "亿" not in profit[0]:
+                self.data['value_coefficient'] = float(self.data['market_value'][:-1])/float(profit_)*0.001
+            else:
+                self.data['value_coefficient'] = float(self.data['market_value'][:-1]) / float(profit_)
         else:
-            self.data['value_coefficient'] = float(self.data['market_value'][:-2]) / float(profit[0][:-1])
-        self.data['write'] = False
+            profit_ = profit[0][:-1]
+            if "亿" in self.data['market_value'] and "亿" not in profit[0]:
+                self.data['value_coefficient'] = float(self.data['market_value'][:-1]) / float(profit_) * 0.001
+            else:
+                self.data['value_coefficient'] = float(self.data['market_value'][:-1]) / float(profit_)
+
+        self.data['write'] = True
 
         print(self.data['name'] + ' Done!')
         print(time.ctime())
@@ -346,7 +355,7 @@ def stock_filter(stock_list):
     excel.write_head(basic)
     index = 1
     NOT_PROCSSED = []
-
+    flag = 0
     for i in stock_list:
         if i.startswith('30') or i.startswith('00'):
             stock_code = 'SZ' + str(i)
@@ -357,8 +366,8 @@ def stock_filter(stock_list):
         XQ = 'https://xueqiu.com/S/{}'.format(stock_code)
         CW = "https://xueqiu.com/snowman/S/{}/detail#/ZYCWZB".format(stock_code)
         glc = 'https://xueqiu.com/snowman/S/{}/detail#/GSGG'.format(stock_code)
-
-        print('There are/is {} left!'.format(len(stock_list)-i))
+        flag += 1
+        print('There are/is {} left!'.format(len(stock_list) - flag))
 
         try:
             b = Stock(XQ)
@@ -377,11 +386,14 @@ def stock_filter(stock_list):
         if financial_data['write']:
             index += 1
     excel.save("result_{}.xls".format(time.time()))
-    with open('failed.json', 'w') as f:
+    with open('failed_{}.json'.format(time.time()), 'w') as f:
         json.dump(NOT_PROCSSED, f)
 
 
 if __name__ == '__main__':
+    import warnings
+    warnings.filterwarnings('ignore')
+
 
     # my_list = ['688981', '300783', '000725', '600588', '300454', '002415', '000333', '300327',
     #            '002352', '002262', '002422', '300750', '603160', '002223', '300206', '300003',
@@ -419,18 +431,23 @@ if __name__ == '__main__':
     # print('###############科创板结束###############')
     # exit(1)
 
-    # l = ['688180']
+    # l = ['688399', '300206', '605123', '002352', '300853', '688289',
+    #      '002007', '300482', '688096', '002223', '688178', '002262',
+    #      '688088', '300487', '300136', '300628', '000333', '002415',
+    #      '300003', '688039', '601318', '688033',
+    #      ]
+    # l = ['688096']
     # stock_filter(l)
     # exit(1)
 
     #从文件中读取股票代码
-    sh = get_code_list('上证.json')
+    # sh = get_code_list('上证.json')
     sz = get_code_list('深证.json')
     # kcb = get_code_list('科创板.json')
     # cyb = get_code_list('创业板.json')
 
-    stock_filter(sh)
-    stock_filter(sz)
+    # stock_filter(sh)
+    stock_filter(sz[1200:])
     # stock_filter(kcb)
     # stock_filter(cyb)
 
