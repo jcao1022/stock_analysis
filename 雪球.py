@@ -19,9 +19,9 @@ import traceback
 
 
 
-class Stock(object):
+class SnowBall(object):
     # DRIVER = r'/usr/local/bin/phantomjs'
-    DRIVER = r'C:\Users\jcao\SynologyDrive\Personal\Snowball\stock_analysis\phantomjs-2.1.1-windows\bin\phantomjs.exe'
+    DRIVER = r'phantomjs-2.1.1-windows\bin\phantomjs.exe'
     SERVICE_ARGS = ['--load-images=false', '--proxy-type=None', '--ignore-ssl-errors=true', '--ssl-protocol=tlsv1']
     USER_AGENTS = [
         # "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; AcooBrowser; .NET CLR 1.1.4322; .NET CLR 2.0.50727)",
@@ -375,10 +375,10 @@ def stock_filter(stock_list):
         print('There are/is {} left!'.format(len(stock_list) - flag))
 
         try:
-            b = Stock(XQ)
+            b = SnowBall(XQ)
             b.basic_info()
 
-            f = Stock(CW)
+            f = SnowBall(CW)
             financial_data = f.financial()
 
         except Exception as e:
@@ -419,7 +419,7 @@ if __name__ == '__main__':
     #获取所有股票代码并存json文件
     code = 'http://quote.eastmoney.com/center/gridlist.html#sh_a_board'
     #
-    # s = Stock(code)
+    # s = SnowBall(code)
     # #
     # sh = '//*[@id="nav_sh_a_board"]/a'
     # sz = '//*[@id="nav_sz_a_board"]/a'
