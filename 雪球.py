@@ -10,17 +10,18 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 import random
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
-# from pandas import DataFrame, Series
-# import numpy as np
-# import  pandas as pd
 import xlwt
 from datetime import datetime
 import traceback
+# from pandas import DataFrame, Series
+# import numpy as np
+# import  pandas as pd
+
 
 
 class Stock(object):
-    DRIVER = r'/usr/local/bin/phantomjs'
-    # DRIVER = r'C:\Users\Administrator\phantomjs-2.1.1-windows\bin\phantomjs.exe'
+    # DRIVER = r'/usr/local/bin/phantomjs'
+    DRIVER = r'C:\Users\jcao\SynologyDrive\Personal\Snowball\stock_analysis\phantomjs-2.1.1-windows\bin\phantomjs.exe'
     SERVICE_ARGS = ['--load-images=false', '--proxy-type=None', '--ignore-ssl-errors=true', '--ssl-protocol=tlsv1']
     USER_AGENTS = [
         # "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; AcooBrowser; .NET CLR 1.1.4322; .NET CLR 2.0.50727)",
@@ -356,6 +357,9 @@ def stock_filter(stock_list):
     index = 1
     NOT_PROCSSED = []
     flag = 0
+    if isinstance(stock_list, str) and len(stock_list) == 6:
+        stock_list = list([stock_list])
+        print(stock_list)
     for i in stock_list:
         if i.startswith('30') or i.startswith('00'):
             stock_code = 'SZ' + str(i)
@@ -367,6 +371,7 @@ def stock_filter(stock_list):
         CW = "https://xueqiu.com/snowman/S/{}/detail#/ZYCWZB".format(stock_code)
         glc = 'https://xueqiu.com/snowman/S/{}/detail#/GSGG'.format(stock_code)
         flag += 1
+        print(XQ)
         print('There are/is {} left!'.format(len(stock_list) - flag))
 
         try:
@@ -412,15 +417,15 @@ if __name__ == '__main__':
     #            ]
 
     #获取所有股票代码并存json文件
-    # code = 'http://quote.eastmoney.com/center/gridlist.html#sh_a_board'
+    code = 'http://quote.eastmoney.com/center/gridlist.html#sh_a_board'
     #
     # s = Stock(code)
-    #
+    # #
     # sh = '//*[@id="nav_sh_a_board"]/a'
     # sz = '//*[@id="nav_sz_a_board"]/a'
     # cyb = '//*[@id="nav_gem_board"]/a'
     # kcb = '//*[@id="nav_kcb_board"]/a'
-    #
+    # #
     # s.get_codes(sh, '上证')
     # print('###############上证结束###############')
     # s.get_codes(sz, '深证')
@@ -441,13 +446,13 @@ if __name__ == '__main__':
     # exit(1)
 
     #从文件中读取股票代码
-    # sh = get_code_list('上证.json')
-    sz = get_code_list('深证.json')
+    sh = get_code_list('上证.json')
+    # sz = get_code_list('深证.json')
     # kcb = get_code_list('科创板.json')
     # cyb = get_code_list('创业板.json')
 
-    # stock_filter(sh)
-    stock_filter(sz[1200:])
+    stock_filter(sh)
+    # stock_filter(sz)
     # stock_filter(kcb)
     # stock_filter(cyb)
 
