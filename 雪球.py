@@ -45,7 +45,7 @@ class SnowBall(object):
     ]
     DCAP = dict(webdriver.DesiredCapabilities.PHANTOMJS)
     DCAP["phantomjs.page.settings.userAgent"] = (random.choice(USER_AGENTS))
-    TIMEOUT = 10
+    TIMEOUT = 15
     data = dict()
 
     def __init__(self, url):
@@ -55,11 +55,14 @@ class SnowBall(object):
     def _get_source(self, url, sleep_time=2):
         self.driver.get(url)
         time.sleep(sleep_time)
-        print(self.driver.current_url)
-        return self.driver
+        print('Driver: {}'.format(self.driver))
+        print('Current URL: ' + self.driver.current_url)
+        # return self.driver
 
     def _get_element(self, locator):
-        WebDriverWait(self.driver, self.TIMEOUT, 0.5).until(EC.presence_of_element_located((By.XPATH, locator)))
+        print("Current Locator: {}".format(locator))
+        print('Time out: {}'.format(self.TIMEOUT))
+        WebDriverWait(self.driver, self.TIMEOUT).until(EC.presence_of_element_located((By.XPATH, locator)))
         return self.driver.find_element_by_xpath(locator)
 
     def __del__(self):
@@ -97,44 +100,50 @@ class SnowBall(object):
         self._get_element(next).click()
         time.sleep(.5)
     #基本信息
+    def list2dict(self, listarg):
+        dict_data = dict()
+        for item in listarg:
+            key, value = item.split('：')
+            try:
+                value = float(value[:-1]) if value.endswith('%') else float(value[1:]) if value.startswith(
+                    ('+', '-')) else float(value)
+            except ValueError:
+                raise Exception('Failed to convert a list to Dict')
+            dict_data[key] = value
+        return dict_data
+
+    def get_stock_basic_info(self, xpath):
+        data = self._get_element(xpath).text.splitlines()
+        all_data = list()
+        all_data.extend(["当日价格：{}".format(data[0])])
+        all_data.extend(["涨幅: {}".format(data[1].split()[0])])
+        all_data.extend(["涨幅比例: {}".format(data[1].split()[1])])
+        for i in range(4, 11):
+            all_data.extend(data[i].split())
+        return self.list2dict(all_data)
+
+    def get_stock_info(self, name, xpath):
+        data = self._get_element(xpath).text
+        return {name: data}
+    def click_link(self, xpath, wait=2):
+        self._get_element(xpath).click() # 进入利润表
+        time.sleep(wait)
+
     def basic_info(self):
-        all_basic = '//*[@id="app"]/div[2]/div[2]/div[5]/table/tbody'
-        x_current_price = '//*[@id="app"]/div[2]/div[2]/div[5]/div/div[1]/div[1]/strong'
-        x_name = '//*[@id="app"]/div[2]/div[2]/div[1]'
-        x_website = '//*[@id="app"]/div[2]/div[3]/div[2]/div[2]/div[1]/div/a'
+        f1 = '//*[@id="app"]/div[2]/div[1]'
+        finance = '//*[@id="app"]/div[2]/div[2]/div/div[1]'
+        self.driver.get_screenshot_as_file("screenshot1.png")
+        self.click_link(f1, 5) #进入利润表
+        self.driver.get_screenshot_as_file("screenshot.png")
+        data = self._get_element(finance)
 
-        self.data['name'] = self._get_element(x_name).text
-        self.data['current_price'] = self._get_element(x_current_price).text
-        self.data['all_basic'] = self._get_element(all_basic).text
-        self.data['website'] = self._get_element(x_website).get_attribute("href")
+        print(data)
 
-        for d in self.data['all_basic'].split():
-            if "市盈率(TTM)" in d:
-                self.data['PE'] = d.split('：')[-1].strip()
-            elif "总市值" in d:
-                self.data['market_value'] = d.split('：')[-1].strip()
-            elif "总股本" in d:
-                self.data['total_equity'] = d.split('：')[-1].strip()
-            elif "市盈率(静)" in d:
-                self.data['PE_static'] = d.split('：')[-1].strip()
-            elif "市盈率(动)" in d:
-                self.data['PE_dynamic'] = d.split('：')[-1].strip()
-            elif "每股收益" in d:
-                self.data['EPS'] = d.split('：')[-1].strip()
-            elif "每股净资产" in d:
-                self.data['BVPS'] = d.split('：')[-1].strip()
-
-            # self.data['market_value'] = self._get_element(x_market_value).text.replace('亿', '')
-            # self.data['website'] = self._get_element(x_website).get_attribute("href")
-            #
-            # self.data['total_equity'] = self._get_element(x_total_equity).text
-            # self.data['PE_static'] = self._get_element(x_PE_static).text
-            # self.data['PE_dynamic'] = self._get_element(x_PE_dynamic).text
-            # self.data['EPS'] = self._get_element(x_EPS).text
-            # self.data['BVPS'] = self._get_element(x_BVPS).text
-
-        #print(self.data)
+        name = self.get_stock_info('name', "")
+        web_site = self.get_stock_info('web_site', "")
+        basic_info = self.get_stock_basic_info("")
         return self.data
+
 
     #财务信息
     def financial(self):
@@ -373,6 +382,7 @@ def stock_filter(stock_list):
         flag += 1
         print(XQ)
         print('There are/is {} left!'.format(len(stock_list) - flag))
+        print("Driver init...")
 
         try:
             b = SnowBall(XQ)
@@ -398,7 +408,6 @@ def stock_filter(stock_list):
 if __name__ == '__main__':
     import warnings
     warnings.filterwarnings('ignore')
-
 
     # my_list = ['688981', '300783', '000725', '600588', '300454', '002415', '000333', '300327',
     #            '002352', '002262', '002422', '300750', '603160', '002223', '300206', '300003',
@@ -447,11 +456,11 @@ if __name__ == '__main__':
 
     #从文件中读取股票代码
     sh = get_code_list('上证.json')
-    # sz = get_code_list('深证.json')
+    sz = get_code_list('深证.json')
     # kcb = get_code_list('科创板.json')
     # cyb = get_code_list('创业板.json')
 
-    stock_filter(sh)
+    stock_filter(sz[199])
     # stock_filter(sz)
     # stock_filter(kcb)
     # stock_filter(cyb)
