@@ -6,6 +6,8 @@ import sys
 import os
 import json
 import re
+import sqlite3
+import sqlalchemy
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 import random
 from selenium.webdriver.support import expected_conditions as EC
@@ -17,7 +19,141 @@ import traceback
 # import numpy as np
 # import  pandas as pd
 
+# db_connection = sqlite3.connect('stock.db')
+# db_connection.execute('CREATE  TABLE  table_name(line_name text)')
 
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.declarative import declarative_base
+
+engine = create_engine('sqlite:///my_stock.db')
+Base = declarative_base()
+Session = sessionmaker(bind=engine)
+session = Session()
+from sqlalchemy import Column, Integer, String, Float, DateTime
+
+
+class Stock(Base):
+    __tablename__ = 'stock'
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String(50))
+    code = Column(Integer)
+    date = Column(DateTime)
+    #股价
+    price = Column(String(20) )
+    #股价变化
+    stock_change = Column(String(60) )
+    # 成交量
+    turnover = Column(String(60) )
+    #换手率
+    change_hands = Column(String(60) )
+    #成交额
+    volume_of_transaction = Column(String(60) )
+    #量比
+    quantity_relative_ratio = Column(String(60) )
+    #总市值
+    total_value = Column(String(60) )
+    #振幅
+    amplitude = Column(String(60) )
+    #委比
+    weibi = Column(String(60) )
+    #流通值
+    circulation_value = Column(String(60) )
+    #市盈率动态
+    pe_dynamic = Column(String(60) )
+    #市盈率TTM
+    pe_ttm = Column(String(60) )
+    #每股收益
+    earnings_per_share = Column(String(60) )
+    #股息
+    dividend_ttm = Column(String(60) )
+    #市盈率静态
+    pe_static = Column(String(60) )
+    #市净率
+    pb = Column(String(60) )
+    # 每股净资产
+    net_asset_value_per_share = Column(String(60) )
+    # 盈利情况
+    profitable = Column(String(60) )
+
+
+    # #营业收入
+    # operation_revenue = Column(String(60) )
+    # #营业收入同比增长
+    # Operating_income_increased_y_on_y = Column(String(60) )
+    # #净利润
+    # net_profits = Column(String(60) )
+    # # 净利润同比增长
+    # net_profit_growth = Column(String(60) )
+    # # 扣非净利润
+    # non_net_profit_withheld = Column(String(60) )
+    # #扣非净利润同比增长
+    # non_net_profit_growth_y_on_y = Column(String(60) )
+    # # # 每股收益
+    # # earnings_per_share = Column(String(60) )
+    # #每股净资产
+    # net_asset_value_per_share = Column(String(60) )
+    # #每股资本公积金
+    # capital_reserve_per_share = Column(String(60) )
+    # #每股未分配利润
+    # undistributed_profit_per_share = Column(String(60) )
+    # # 每股经营现金流
+    # operating_cash_flow_per_share= Column(String(60) )
+    # # 净资产收益率
+    # net_assets_income_rate= Column(String(60) )
+    # # 净资产收益率-摊薄
+    # return_on_equity_diluted= Column(String(60) )
+    # # 总资产报酬率\
+    # rate_of_return_on_total_assets= Column(String(60) )
+    # # 人力投入回报率 \
+    # rate_of_return_on_manpower_input= Column(String(60) )
+    # # 销售毛利率 \
+    # gross_margin= Column(String(60) )
+    # # 销售净利率 \
+    # net_profit_margin_on_sales= Column(String(60) )
+    # # 资产负债率 \
+    # debt_to_assets_ratio= Column(String(60) )
+    # # 流动比率 \
+    # liquidity_ratio= Column(String(60) )
+    # # '速动比率' \
+    # quick_ratio= Column(String(60) )
+    # #权益乘数
+    # equity_multiplier= Column(String(60) )
+    # #产权比率
+    # equity_ratio= Column(String(60) )
+    # # 股东权益比率
+    # investor_ratio= Column(String(60) )
+    # # 现金流量比率
+    # Cash_flow_ratio= Column(String(60) )
+    # # 存货周转天数
+    # days_sales_of_inventory= Column(String(60) )
+    # # 应收账款周转天数
+    # days_sales_outstanding= Column(String(60) )
+    # # 应付账款周转天数
+    # days_of_turnover_of_accounts_payable= Column(String(60) )
+    # # 现金循环周期
+    # cash_cycle= Column(String(60) )
+    # # 营业周期
+    # operating_cycle= Column(String(60) )
+    # # 总资产周转率
+    # total_assets_turnover= Column(String(60) )
+    # # 存货周转率
+    # inventory_turnover_ratio= Column(String(60) )
+    # # 应收账款周转率
+    # turnover_of_account_receivable= Column(String(60) )
+    # # 应付账款周转率
+    # turnover_ratio_of_account_payable= Column(String(60) )
+    # # 流动资产周转率
+    # velocity_of_liquid_assets= Column(String(60) )
+    # # 固定资产周转率
+    # turnover_of_fixed_assets= Column(String(60) )
+
+    def __repr__(self):
+        return f'<Stock {self.name}>'
+
+# 创建表
+Base.metadata.create_all(engine)
 
 class SnowBall(object):
     # DRIVER = r'/usr/local/bin/phantomjs'
@@ -48,8 +184,11 @@ class SnowBall(object):
     TIMEOUT = 15
     data = dict()
 
-    def __init__(self, url):
-        self.driver = webdriver.PhantomJS(self.DRIVER, service_args=self.SERVICE_ARGS, desired_capabilities=self.DCAP)
+    def __init__(self, url, browser='p'):
+        if browser == 'p':
+            self.driver = webdriver.PhantomJS(self.DRIVER, service_args=self.SERVICE_ARGS, desired_capabilities=self.DCAP)
+        if browser == 'c':
+            self.driver = webdriver.Chrome()
         self._get_source(url)
 
     def _get_source(self, url, sleep_time=2):
@@ -65,11 +204,11 @@ class SnowBall(object):
         WebDriverWait(self.driver, self.TIMEOUT).until(EC.presence_of_element_located((By.XPATH, locator)))
         return self.driver.find_element_by_xpath(locator)
 
-    def __del__(self):
-        self.close()
+    # def __del__(self):
+        # self.close()
 
     def close(self):
-        self.driver.close()
+        # self.driver.close()
         self.driver.quit()
 
     def get_codes(self, lable, filename):
@@ -112,146 +251,102 @@ class SnowBall(object):
             dict_data[key] = value
         return dict_data
 
-    def get_stock_basic_info(self, xpath):
+    def _get_stock_info(self, xpath):
+        print("getting basic info")
         data = self._get_element(xpath).text.splitlines()
-        all_data = list()
-        all_data.extend(["当日价格：{}".format(data[0])])
-        all_data.extend(["涨幅: {}".format(data[1].split()[0])])
-        all_data.extend(["涨幅比例: {}".format(data[1].split()[1])])
-        for i in range(4, 11):
-            all_data.extend(data[i].split())
-        return self.list2dict(all_data)
+        return data
 
-    def get_stock_info(self, name, xpath):
-        data = self._get_element(xpath).text
-        return {name: data}
-    def click_link(self, xpath, wait=2):
+    def _click_link(self, xpath, wait=2):
         self._get_element(xpath).click() # 进入利润表
         time.sleep(wait)
 
-    def basic_info(self):
-        f1 = '//*[@id="app"]/div[2]/div[1]'
-        finance = '//*[@id="app"]/div[2]/div[2]/div/div[1]'
-        self.driver.get_screenshot_as_file("screenshot1.png")
-        self.click_link(f1, 5) #进入利润表
-        self.driver.get_screenshot_as_file("screenshot.png")
-        data = self._get_element(finance)
+    #basic info
+    def basic_info(self, code):
+        basic = '//*[@id="app"]/div[2]/div[2]/div[3]'
+        dict_data = dict()
+        data = self._get_stock_info(basic)
+        dict_data['code'] = code
+        dict_data['name'] = data[4].split('：')[-2]
+        dict_data['price'] = data[0]
+        dict_data['stock_change'] = data[1]
+        # 成交量
+        dict_data['turnover'] = data[5].split('：')[-1]
+        # 换手
+        dict_data['change_hands'] = data[7].split('：')[1].split()[0]
+        # 成交额
+        dict_data['volume_of_transaction'] = data[6].split('：')[-1]
+        # 量比
+        dict_data['quantity_relative_ratio'] = data[7].split('：')[3].split()[0]
+        # 总市值
+        dict_data['total_value'] = data[7].split('：')[-1]
+        # 振幅
+        dict_data['amplitude'] = data[8].split('：')[1].split()[0]
+        # 委比
+        dict_data['weibi'] = data[8].split('：')[3].split()[0]
+        # 流通值
+        dict_data['circulation_value'] = data[8].split('：')[-1]
+        # 市盈率(动)
+        dict_data['pe_dynamic'] = data[9].split('：')[1].split()[0]
+        # 市盈率(TTM)
+        dict_data['pe_ttm'] = data[9].split('：')[2].split()[0]
+        # 每股收益
+        dict_data['earnings_per_share'] = data[9].split('：')[3].split()[0]
+        # 股息(TTM)
+        dict_data['dividend_ttm'] = data[9].split('：')[4].split()[0]
+        # 市盈率(静)
+        dict_data['pe_static'] = data[10].split('：')[1].split()[0]
+        # 市净率
+        dict_data['pb'] = data[10].split('：')[2].split()[0]
+        # 每股净资产
+        dict_data['net_asset_value_per_share'] = data[10].split('：')[3].split()[0]
+        # 盈利情况
+        dict_data['profitable'] = data[12].split('：')[3].split()[0]
+        print(dict_data)
 
-        print(data)
+        return dict_data
 
-        name = self.get_stock_info('name', "")
-        web_site = self.get_stock_info('web_site', "")
-        basic_info = self.get_stock_basic_info("")
-        return self.data
+    def finance_data_proc(self, data):
+        finance_data = dict()
+        for i in range(3, 39, 6):
+            finance_data[data[i]] = [[data[i + 1]], [data[i + 2]], [data[i + 3]], [data[i + 4]]]
+            if data[i].__contains__('0' or '1' or '2' or '3' or '4' or '5' or '6' or '7' or '8' or '9'):
+                raise Exception("Finance data is incorrect!")
+        for i in range(40, 70, 6):
+            finance_data[data[i]] = [[data[i + 1]], [data[i + 2]], [data[i + 3]], [data[i + 4]]]
+            if data[i].__contains__('0' or '1' or '2' or '3' or '4' or '5' or '6' or '7' or '8' or '9'):
+                raise Exception("Finance data is incorrect!")
+        for i in range(71, 107, 6):
+            finance_data[data[i]] = [[data[i + 1]], [data[i + 2]], [data[i + 3]], [data[i + 4]]]
+            if data[i].__contains__('0' or '1' or '2' or '3' or '4' or '5' or '6' or '7' or '8' or '9'):
+                raise Exception("Finance data is incorrect!")
+        for i in range(108, 150, 6):
+            finance_data[data[i]] = [[data[i + 1]], [data[i + 2]], [data[i + 3]], [data[i + 4]]]
+            if data[i].__contains__('0' or '1' or '2' or '3' or '4' or '5' or '6' or '7' or '8' or '9'):
+                raise Exception("Finance data is incorrect!")
+        for i in range(151, 217, 6):
+            finance_data[data[i]] = [[data[i + 1]], [data[i + 2]], [data[i + 3]], [data[i + 4]]]
+            if data[i].__contains__('0' or '1' or '2' or '3' or '4' or '5' or '6' or '7' or '8' or '9'):
+                raise Exception("Finance data is incorrect!")
+        print(finance_data)
+        return finance_data
 
 
     #财务信息
-    def financial(self):
+    def financial(self, code):
+        print("getting finance info...")
+        # self.driver.get_screenshot_as_file("after.png")
+        table = '//*[@id="app"]/div[2]/div[2]/div/div[4]/div/table'
+        self.driver.get_screenshot_as_file("after.png")
+        data = self._get_element(table).text.splitlines()
+        print(data)
+        new_data = self.finance_data_proc(data)
+        print(new_data)
+        return new_data
 
-        #net_Profit = '//*[@id="app"]/div[2]/div[2]/div/div[4]/div/table'
-        per_year_bt = '//*[@id="app"]/div[2]/div[2]/div/div[2]/div[1]/span[2]'
-        per_year = '//*[@id="app"]/div[2]/div[2]/div/div[4]/div/table'
-        #all = '//*[@id="app"]/div[2]/div[2]/div/div[2]/div[1]/span[1]'
-        tb = '//*[@id="app"]/div[2]/div[2]/div/div[2]/div[2]/label/input'
-
-        continued_growth_in_turnover = '' #营业额持续增长
-        continued_growth_in_profit = '' #净利润持续增长
-        gross_profit_margin = '' #毛利率
-        net_profit_ratio = '' #净利率
-        DABR = '' #资产负债率
-        cash_flow_ratio = '' #现金流比率
-        cash_cycle = '' #现金循环周期
-        inventory_turnover_days = '' #存货周转天数
-        total_asset_turnover = '' #总资产周转率
-
-        # self._get_element(tb).click()
-        # self.data['all'] = self._get_element(net_Profit).text
-        self._get_element(per_year_bt).click()
-        self.data['per_year'] = self._get_element(per_year).text
-
-        report_years = 0
-        financial_datas = self.data['per_year'].split()
-        for i in financial_datas[1:6]:
-            if "年报" in i:
-                report_years += 1
-        #index1 = financial_datas.index('营业收入')
-        index2 = financial_datas.index('营业收入同比增长')
-        turnover_continue = list_sum(financial_datas[index2 + 1: index2 + report_years + 1])
-        self.data['continued_growth_rate_in_turnover'] = turnover_continue[0]/report_years
-        self.data['continued_growth_rate_in_turnover_without_negative'] = turnover_continue[1]
-        index3 = financial_datas.index('净利润')
-        profit = financial_datas[index3 + 1: index3 + report_years + 1]
-
-        index4 = financial_datas.index('净利润同比增长')
-        profit_continue = list_sum(financial_datas[index4 + 1: index4 + report_years + 1])
-        self.data['continued_growth_rate_in_profit'] = profit_continue[0]/report_years
-        self.data['continued_growth_rate_in_profit_without_negative'] = profit_continue[1]
-
-        index5 = financial_datas.index('销售毛利率')
-        self.data['gross_profit_margin'] = list_sum(financial_datas[index5 + 1: index5 + report_years + 1])[0]/report_years
-        index6 = financial_datas.index('销售净利率')
-        self.data['net_profit_ratio'] = list_sum(financial_datas[index6 + 1: index6 + report_years + 1])[0]/report_years
-        index7 = financial_datas.index('资产负债率')
-        self.data['DABR'] = list_sum(financial_datas[index7 + 1: index7 + report_years + 1])[0]/report_years
-        index8 = financial_datas.index('现金流量比率')
-        self.data['cash_flow_ratio'] = list_sum(financial_datas[index8 + 1: index8 + report_years + 1])[0]/report_years
-        index9 = financial_datas.index('存货周转天数')
-        self.data['inventory_turnover_days'] = list_sum(financial_datas[index9 + 1: index9 + report_years + 1])[0]/report_years
-        index10 = financial_datas.index('现金循环周期')
-        self.data['cash_cycle'] = list_sum(financial_datas[index10 + 1: index10 + report_years + 1])[0]/report_years
-        index11 = financial_datas.index('总资产周转率')
-        self.data['total_asset_turnover'] = list_sum(financial_datas[index11 + 1: index11 + report_years + 1])[0]/report_years
-        index12 = financial_datas.index('净资产收益率')
-        self.data['ROE'] = list_sum(financial_datas[index12 + 1: index12 + report_years + 1])[0]/report_years
-
-        if '万亿' in self.data['market_value']:
-            self.data['market_value'] = float(self.data['market_value'][:-2])*10000
-            profit_ =profit[0][:-1]
-            if "亿" in self.data['market_value'] and "亿" not in profit[0]:
-                self.data['value_coefficient'] = float(self.data['market_value'][:-1])/float(profit_)*0.001
-            else:
-                self.data['value_coefficient'] = float(self.data['market_value'][:-1]) / float(profit_)
-        else:
-            profit_ = profit[0][:-1]
-            if "亿" in self.data['market_value'] and "亿" not in profit[0]:
-                self.data['value_coefficient'] = float(self.data['market_value'][:-1]) / float(profit_) * 0.001
-            else:
-                self.data['value_coefficient'] = float(self.data['market_value'][:-1]) / float(profit_)
-
-        self.data['write'] = True
-
-        print(self.data['name'] + ' Done!')
-        print(time.ctime())
-
-        # 股票筛选
-
-        continued_growth_rate_in_turnover = 30
-        continued_growth_rate_in_turnover_without_negative =True
-        continued_growth_rate_in_profit = 25
-        continued_growth_rate_in_profit_without_negative = True
-        gross_profit_margin = 30
-        net_profit_ratio = 20
-        cash_flow_ratio = 0.05
-        DABR = 50
-        ROE = 20
-        value_coefficient = 80
-
-        if self.data['continued_growth_rate_in_turnover'] >= continued_growth_rate_in_turnover \
-                and self.data['continued_growth_rate_in_turnover_without_negative'] is True \
-                and self.data['continued_growth_rate_in_profit'] > continued_growth_rate_in_profit \
-                and self.data['continued_growth_rate_in_profit_without_negative'] is True \
-                and self.data['gross_profit_margin'] > gross_profit_margin \
-                and self.data['net_profit_ratio'] > net_profit_ratio \
-                and self.data['DABR'] < DABR \
-                and self.data['cash_flow_ratio'] > cash_flow_ratio \
-                and self.data['ROE'] > ROE \
-                and self.data['value_coefficient'] < value_coefficient:
-            self.data['write'] = True
-
-        return self.data
 
     #高层管理
     def management(self):
+        print("getting management info")
         gc = '//*[@id="app"]/div[2]/div[2]/div/table'
         self.data['management'] = self._get_element(gc).text
         return self.data
@@ -323,6 +418,18 @@ class Excel(object):
     def save(self, filename):
         self.workbook.save(filename)
 
+class DB(object):
+
+    def __int__(self):
+        self.connection = sqlite3.connect('stock.db')
+
+    def execute_sql(self, sql):
+        return self.connection.cursor().execute(sql).fetchall()
+
+    def save(self):
+        self.connection.commit()
+
+
 def list_sum(L):
     sum = 0
     continue_increase = True
@@ -359,23 +466,25 @@ def get_code_list(filename):
                     stock_codes = json.load(f)
     return stock_codes
 
-def stock_filter(stock_list):
-    excel = Excel()
-    basic = excel.add_sheet('Basic info')
-    excel.write_head(basic)
-    index = 1
+def _stock_code(code):
+        if code.startswith('30') or code.startswith('00'):
+            stock_code = 'SZ' + str(code)
+            return stock_code
+        elif code.startswith('68') or code.startswith('60'):
+            stock_code = 'SH' + str(code)
+            return stock_code
+        else:
+            raise Exception("Stock Code was not correct!")
+
+def main(stock_list):
+
     NOT_PROCSSED = []
     flag = 0
     if isinstance(stock_list, str) and len(stock_list) == 6:
         stock_list = list([stock_list])
         print(stock_list)
     for i in stock_list:
-        if i.startswith('30') or i.startswith('00'):
-            stock_code = 'SZ' + str(i)
-        elif i.startswith('68') or i.startswith('60'):
-            stock_code = 'SH' + str(i)
-        else:
-            exit("Stock Code was not correct!")
+        stock_code = _stock_code(i)
         XQ = 'https://xueqiu.com/S/{}'.format(stock_code)
         CW = "https://xueqiu.com/snowman/S/{}/detail#/ZYCWZB".format(stock_code)
         glc = 'https://xueqiu.com/snowman/S/{}/detail#/GSGG'.format(stock_code)
@@ -385,11 +494,128 @@ def stock_filter(stock_list):
         print("Driver init...")
 
         try:
-            b = SnowBall(XQ)
-            b.basic_info()
+            basic = SnowBall(XQ, 'p')
+            print(XQ)
+            basic_data = basic.basic_info(stock_code)
+            basic.close()
 
-            f = SnowBall(CW)
-            financial_data = f.financial()
+            finance = SnowBall(CW, 'c')
+            print(CW)
+            financial_data = finance.financial(stock_code)
+            finance.close()
+
+            new_data_add_to_db = Stock(
+                name = basic_data['name'],
+                code = basic_data['code'],
+                date = datetime.today(),
+                price = basic_data['price'],
+                # 股价变化
+                stock_change = basic_data['stock_change'],
+                # 成交量
+                turnover = basic_data['turnover'],
+                # 换手率
+                change_hands = basic_data['change_hands'],
+                # 成交额
+                volume_of_transaction = basic_data['volume_of_transaction'],
+                # 量比
+                quantity_relative_ratio = basic_data['quantity_relative_ratio'],
+                # 总市值
+                total_value = basic_data['total_value'],
+                # 振幅
+                amplitude = basic_data['amplitude'],
+                # 委比
+                weibi = basic_data['weibi'],
+                # 流通值
+                circulation_value = basic_data['circulation_value'],
+                # 市盈率动态
+                pe_dynamic = basic_data['pe_dynamic'],
+                # 市盈率TTM
+                pe_ttm = basic_data['pe_ttm'],
+                # 每股收益
+                earnings_per_share = basic_data['earnings_per_share'],
+                # 股息
+                dividend_ttm = basic_data['dividend_ttm'],
+                # 市盈率静态
+                pe_static = basic_data['pe_static'],
+                # 市净率
+                pb = basic_data['pb'],
+                # 每股净资产
+                net_asset_value_per_share = basic_data['net_asset_value_per_share'],
+                # 盈利情况
+                profitable=basic_data['profitable'],
+                # # 营业收入
+                # operation_revenue = financial_data['营业收入'],
+                # # 营业收入同比增长
+                # Operating_income_increased_y_on_y = financial_data['营业收入同比增长'],
+                # # 净利润
+                # net_profits = financial_data['净利润'],
+                # # 净利润同比增长
+                # net_profit_growth = financial_data['净利润同比增长'],
+                # # 扣非净利润
+                # non_net_profit_withheld = financial_data['扣非净利润'],
+                # # 扣非净利润同比增长
+                # non_net_profit_growth_y_on_y = financial_data['扣非净利润同比增长'],
+                # # # 每股收益
+                # # earnings_per_share = financial_data['每股收益'],
+                # # 每股净资产
+                # net_asset_value_per_share = financial_data['每股净资产'],
+                # # 每股资本公积金
+                # capital_reserve_per_share = financial_data['每股资本公积金'],
+                # # 每股未分配利润
+                # undistributed_profit_per_share = financial_data['每股未分配利润'],
+                # # 每股经营现金流
+                # operating_cash_flow_per_share = financial_data['每股经营现金流'],
+                # # 净资产收益率
+                # net_assets_income_rate = financial_data['净资产收益率'],
+                # # 净资产收益率-摊薄
+                # return_on_equity_diluted = financial_data['净资产收益率-摊薄'],
+                # # 总资产报酬率\
+                # rate_of_return_on_total_assets = financial_data['总资产报酬率'],
+                # # 人力投入回报率 \
+                # rate_of_return_on_manpower_input = financial_data['人力投入回报率'],
+                # # 销售毛利率 \
+                # gross_margin = financial_data['销售毛利率'],
+                # # 销售净利率 \
+                # net_profit_margin_on_sales = financial_data['销售净利率'],
+                # # 资产负债率 \
+                # debt_to_assets_ratio = financial_data['资产负债率'],
+                # # 流动比率 \
+                # liquidity_ratio = financial_data['流动比率'],
+                # # '速动比率' \
+                # quick_ratio = financial_data['速动比率'],
+                # # 权益乘数
+                # equity_multiplier = financial_data['权益乘数'],
+                # # 产权比率
+                # equity_ratio = financial_data['产权比率'],
+                # # 股东权益比率
+                # investor_ratio = financial_data['股东权益比率'],
+                # # 现金流量比率
+                # Cash_flow_ratio = financial_data['现金流量比率'],
+                # # 存货周转天数
+                # days_sales_of_inventory = financial_data['存货周转天数'],
+                # # 应收账款周转天数
+                # days_sales_outstanding = financial_data['应收账款周转天数'],
+                # # 应付账款周转天数
+                # days_of_turnover_of_accounts_payable = financial_data['应付账款周转天数'],
+                # # 现金循环周期
+                # cash_cycle = financial_data['现金循环周期'],
+                # # 营业周期
+                # operating_cycle = financial_data['营业周期'],
+                # # 总资产周转率
+                # total_assets_turnover = financial_data['总资产周转率'],
+                # # 存货周转率
+                # inventory_turnover_ratio = financial_data['存货周转率'],
+                # # 应收账款周转率
+                # turnover_of_account_receivable = financial_data['应收账款周转率'],
+                # # 应付账款周转率
+                # turnover_ratio_of_account_payable = financial_data['应付账款周转率'],
+                # # 流动资产周转率
+                # velocity_of_liquid_assets = financial_data['流动资产周转率'],
+                # # 固定资产周转率
+                # turnover_of_fixed_assets = financial_data['固定资产周转率'],
+            )
+            session.add(new_data_add_to_db)
+            session.commit()
 
         except Exception as e:
             print(e)
@@ -397,12 +623,7 @@ def stock_filter(stock_list):
             traceback.print_tb(exc_obj)
             NOT_PROCSSED.append(i)
             continue
-        excel.write_to_excel(basic, financial_data, index, financial_data['write'])
-        if financial_data['write']:
-            index += 1
-    excel.save("result_{}.xls".format(time.time()))
-    with open('failed_{}.json'.format(time.time()), 'w') as f:
-        json.dump(NOT_PROCSSED, f)
+
 
 
 if __name__ == '__main__':
@@ -426,7 +647,7 @@ if __name__ == '__main__':
     #            ]
 
     #获取所有股票代码并存json文件
-    code = 'http://quote.eastmoney.com/center/gridlist.html#sh_a_board'
+    # code = 'http://quote.eastmoney.com/center/gridlist.html#sh_a_board'
     #
     # s = SnowBall(code)
     # #
@@ -450,21 +671,8 @@ if __name__ == '__main__':
     #      '688088', '300487', '300136', '300628', '000333', '002415',
     #      '300003', '688039', '601318', '688033',
     #      ]
-    # l = ['688096']
+    l = ['688096']
     # stock_filter(l)
+    main(l)
     # exit(1)
-
-    #从文件中读取股票代码
-    sh = get_code_list('上证.json')
-    sz = get_code_list('深证.json')
-    # kcb = get_code_list('科创板.json')
-    # cyb = get_code_list('创业板.json')
-
-    stock_filter(sz[199])
-    # stock_filter(sz)
-    # stock_filter(kcb)
-    # stock_filter(cyb)
-
-
-
 
