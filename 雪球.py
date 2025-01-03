@@ -201,7 +201,7 @@ class SnowBall(object):
             self.driver = webdriver.Chrome(options=chrome_options, service_args=self.SERVICE_ARGS)
         if browser == 'ff':
             ff_options = Options()
-            ff_options.headless = True
+            ff_options.add_argument("--headless=new")
             exec_path = r'/usr/bin/firefox'
             self.driver = webdriver.Firefox(options=ff_options, executable_path=exec_path, service_args=self.SERVICE_ARGS)
         self._get_source(url)
