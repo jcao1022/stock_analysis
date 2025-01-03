@@ -157,7 +157,8 @@ Base.metadata.create_all(engine)
 
 class SnowBall(object):
     # DRIVER = r'/usr/local/bin/phantomjs'
-    DRIVER = r'phantomjs-2.1.1-windows\bin\phantomjs.exe'
+    #DRIVER = r'phantomjs-2.1.1-windows\bin\phantomjs.exe'
+    DRIVER = r'/root/tmp/sw/phantomjs-2.1.1-linux-x86_64/bin'
     SERVICE_ARGS = ['--load-images=false', '--proxy-type=None', '--ignore-ssl-errors=true', '--ssl-protocol=tlsv1']
     chrome_options = Options()
     # chrome_options.add_argument("--disable-extensions")
@@ -202,12 +203,12 @@ class SnowBall(object):
     def _get_source(self, url, sleep_time=2):
         self.driver.get(url)
         time.sleep(sleep_time)
-        print('Driver: {}'.format(self.driver))
+        # print('Driver: {}'.format(self.driver))
         print('Current URL: ' + self.driver.current_url)
         # return self.driver
 
     def _get_element(self, locator):
-        print("Current Locator: {}".format(locator))
+        # print("Current Locator: {}".format(locator))
         print('Time out: {}'.format(self.TIMEOUT))
         WebDriverWait(self.driver, self.TIMEOUT).until(EC.presence_of_element_located((By.XPATH, locator)))
         return self.driver.find_element_by_xpath(locator)
@@ -260,7 +261,7 @@ class SnowBall(object):
         return dict_data
 
     def _get_stock_info(self, xpath):
-        print("getting basic info")
+        print("getting basic info...")
         data = self._get_element(xpath).text
         return data
 
