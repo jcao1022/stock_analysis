@@ -30,15 +30,15 @@ engine = create_engine('sqlite:///my_stock.db')
 Base = declarative_base()
 Session = sessionmaker(bind=engine)
 session = Session()
-from sqlalchemy import Column, Integer, String, Float, DateTime
+from sqlalchemy import Column, Integer, String, Float, DateTime, Date
 
 
 class Stock(Base):
     __tablename__ = 'stock'
 
     id = Column(Integer, primary_key=True)
-    name = Column(String(50))
-    code = Column(Integer)
+    name = Column(String(60))
+    code = Column(String(60))
     date = Column(DateTime)
     #股价
     price = Column(String(20) )
@@ -76,78 +76,76 @@ class Stock(Base):
     net_asset_value_per_share = Column(String(60) )
     # 盈利情况
     profitable = Column(String(60) )
-
-
-    # #营业收入
-    # operation_revenue = Column(String(60) )
-    # #营业收入同比增长
-    # Operating_income_increased_y_on_y = Column(String(60) )
-    # #净利润
-    # net_profits = Column(String(60) )
-    # # 净利润同比增长
-    # net_profit_growth = Column(String(60) )
-    # # 扣非净利润
-    # non_net_profit_withheld = Column(String(60) )
-    # #扣非净利润同比增长
-    # non_net_profit_growth_y_on_y = Column(String(60) )
-    # # # 每股收益
-    # # earnings_per_share = Column(String(60) )
-    # #每股净资产
+    #营业收入
+    operation_revenue = Column(String(60) )
+    #营业收入同比增长
+    operating_income_increased_y_on_y = Column(String(60) )
+    #净利润
+    net_profits = Column(String(60) )
+    # 净利润同比增长
+    net_profit_growth = Column(String(60) )
+    # 扣非净利润
+    non_net_profit_withheld = Column(String(60) )
+    #扣非净利润同比增长
+    non_net_profit_growth_y_on_y = Column(String(60) )
+    # # 每股收益
+    # earnings_per_share = Column(String(60) )
+    #每股净资产
     # net_asset_value_per_share = Column(String(60) )
-    # #每股资本公积金
-    # capital_reserve_per_share = Column(String(60) )
-    # #每股未分配利润
-    # undistributed_profit_per_share = Column(String(60) )
-    # # 每股经营现金流
-    # operating_cash_flow_per_share= Column(String(60) )
-    # # 净资产收益率
-    # net_assets_income_rate= Column(String(60) )
-    # # 净资产收益率-摊薄
-    # return_on_equity_diluted= Column(String(60) )
-    # # 总资产报酬率\
-    # rate_of_return_on_total_assets= Column(String(60) )
-    # # 人力投入回报率 \
-    # rate_of_return_on_manpower_input= Column(String(60) )
-    # # 销售毛利率 \
-    # gross_margin= Column(String(60) )
-    # # 销售净利率 \
-    # net_profit_margin_on_sales= Column(String(60) )
-    # # 资产负债率 \
-    # debt_to_assets_ratio= Column(String(60) )
-    # # 流动比率 \
-    # liquidity_ratio= Column(String(60) )
-    # # '速动比率' \
-    # quick_ratio= Column(String(60) )
-    # #权益乘数
-    # equity_multiplier= Column(String(60) )
-    # #产权比率
-    # equity_ratio= Column(String(60) )
-    # # 股东权益比率
-    # investor_ratio= Column(String(60) )
-    # # 现金流量比率
-    # Cash_flow_ratio= Column(String(60) )
-    # # 存货周转天数
-    # days_sales_of_inventory= Column(String(60) )
-    # # 应收账款周转天数
-    # days_sales_outstanding= Column(String(60) )
-    # # 应付账款周转天数
-    # days_of_turnover_of_accounts_payable= Column(String(60) )
-    # # 现金循环周期
-    # cash_cycle= Column(String(60) )
-    # # 营业周期
-    # operating_cycle= Column(String(60) )
-    # # 总资产周转率
-    # total_assets_turnover= Column(String(60) )
-    # # 存货周转率
-    # inventory_turnover_ratio= Column(String(60) )
-    # # 应收账款周转率
-    # turnover_of_account_receivable= Column(String(60) )
-    # # 应付账款周转率
-    # turnover_ratio_of_account_payable= Column(String(60) )
-    # # 流动资产周转率
-    # velocity_of_liquid_assets= Column(String(60) )
-    # # 固定资产周转率
-    # turnover_of_fixed_assets= Column(String(60) )
+    #每股资本公积金
+    capital_reserve_per_share = Column(String(60) )
+    #每股未分配利润
+    undistributed_profit_per_share = Column(String(60) )
+    # 每股经营现金流
+    operating_cash_flow_per_share= Column(String(60) )
+    # 净资产收益率
+    net_assets_income_rate= Column(String(60) )
+    # 净资产收益率-摊薄
+    return_on_equity_diluted= Column(String(60) )
+    # 总资产报酬率\
+    rate_of_return_on_total_assets= Column(String(60) )
+    # 人力投入回报率 \
+    rate_of_return_on_manpower_input= Column(String(60) )
+    # 销售毛利率 \
+    gross_margin= Column(String(60) )
+    # 销售净利率 \
+    net_profit_margin_on_sales= Column(String(60) )
+    # 资产负债率 \
+    debt_to_assets_ratio= Column(String(60) )
+    # 流动比率 \
+    liquidity_ratio= Column(String(60) )
+    # '速动比率' \
+    quick_ratio= Column(String(60) )
+    #权益乘数
+    equity_multiplier= Column(String(60) )
+    #产权比率
+    equity_ratio= Column(String(60) )
+    # 股东权益比率
+    investor_ratio= Column(String(60) )
+    # 现金流量比率
+    cash_flow_ratio= Column(String(60) )
+    # 存货周转天数
+    days_sales_of_inventory= Column(String(60) )
+    # 应收账款周转天数
+    days_sales_outstanding= Column(String(60) )
+    # 应付账款周转天数
+    days_of_turnover_of_accounts_payable= Column(String(60) )
+    # 现金循环周期
+    cash_cycle= Column(String(60) )
+    # 营业周期
+    operating_cycle= Column(String(60) )
+    # 总资产周转率
+    total_assets_turnover= Column(String(60) )
+    # 存货周转率
+    inventory_turnover_ratio= Column(String(60) )
+    # 应收账款周转率
+    turnover_of_account_receivable= Column(String(60) )
+    # 应付账款周转率
+    turnover_ratio_of_account_payable= Column(String(60) )
+    # 流动资产周转率
+    velocity_of_liquid_assets= Column(String(60) )
+    # 固定资产周转率
+    turnover_of_fixed_assets= Column(String(60) )
 
     def __repr__(self):
         return f'<Stock {self.name}>'
@@ -253,7 +251,7 @@ class SnowBall(object):
 
     def _get_stock_info(self, xpath):
         print("getting basic info")
-        data = self._get_element(xpath).text.splitlines()
+        data = self._get_element(xpath).text
         return data
 
     def _click_link(self, xpath, wait=2):
@@ -266,41 +264,44 @@ class SnowBall(object):
         dict_data = dict()
         data = self._get_stock_info(basic)
         dict_data['code'] = code
-        dict_data['name'] = data[4].split('：')[-2]
-        dict_data['price'] = data[0]
-        dict_data['stock_change'] = data[1]
+        dict_data['name'] = self._get_element('//*[@id="app"]/div[2]/div[2]/h1').text.split('(')[0]
+        dict_data['price'] = data.splitlines()[0]
+        dict_data['stock_change'] = data.splitlines()[1]
         # 成交量
-        dict_data['turnover'] = data[5].split('：')[-1]
+        dict_data['turnover'] = re.search(r'成交量：(\S+)\s', data).group(1)
         # 换手
-        dict_data['change_hands'] = data[7].split('：')[1].split()[0]
+        dict_data['change_hands'] = re.search(r'换手：(\S+)\s', data).group(1)
         # 成交额
-        dict_data['volume_of_transaction'] = data[6].split('：')[-1]
+        dict_data['volume_of_transaction'] = re.search(r'成交额：(\S+)\s', data).group(1)
         # 量比
-        dict_data['quantity_relative_ratio'] = data[7].split('：')[3].split()[0]
+        dict_data['quantity_relative_ratio'] = re.search(r'量比：(\S+)\s', data).group(1)
         # 总市值
-        dict_data['total_value'] = data[7].split('：')[-1]
+        dict_data['total_value'] = re.search(r'总市值：(\d+.?\d+万?亿?)', data).group(1)
         # 振幅
-        dict_data['amplitude'] = data[8].split('：')[1].split()[0]
+        dict_data['amplitude'] = re.search(r'振幅：(\S+)\s', data).group(1)
         # 委比
-        dict_data['weibi'] = data[8].split('：')[3].split()[0]
+        dict_data['weibi'] = re.search(r'委比：(-?\d+.?\d+%)', data).group(1)
         # 流通值
-        dict_data['circulation_value'] = data[8].split('：')[-1]
+        dict_data['circulation_value'] = re.search(r'流通值：(\d+.?\d+万?亿?)', data).group(1)
         # 市盈率(动)
-        dict_data['pe_dynamic'] = data[9].split('：')[1].split()[0]
+        dict_data['pe_dynamic'] = re.search(r'市盈率\(动\)：(\S+)\s', data).group(1)
         # 市盈率(TTM)
-        dict_data['pe_ttm'] = data[9].split('：')[2].split()[0]
+        dict_data['pe_ttm'] = re.search(r'市盈率\(TTM\)：(\S+)\s', data).group(1)
         # 每股收益
-        dict_data['earnings_per_share'] = data[9].split('：')[3].split()[0]
+        dict_data['earnings_per_share'] = re.search(r'每股收益：(\S+)\s', data).group(1)
         # 股息(TTM)
-        dict_data['dividend_ttm'] = data[9].split('：')[4].split()[0]
+        dict_data['dividend_ttm'] = re.search(r'股息\(TTM\)：(\S+)\s', data).group(1)
         # 市盈率(静)
-        dict_data['pe_static'] = data[10].split('：')[1].split()[0]
+        dict_data['pe_static'] = re.search(r'市盈率\(静\)：(\S+)\s', data).group(1)
         # 市净率
-        dict_data['pb'] = data[10].split('：')[2].split()[0]
+        dict_data['pb'] = re.search(r'市净率：(\d+.?\d+)', data).group(1)
         # 每股净资产
-        dict_data['net_asset_value_per_share'] = data[10].split('：')[3].split()[0]
+        dict_data['net_asset_value_per_share'] = re.search(r'每股净资产：(\d+.?\d+)', data).group(1)
         # 盈利情况
-        dict_data['profitable'] = data[12].split('：')[3].split()[0]
+        try:
+            dict_data['profitable'] = re.search(r'盈利情况：(\S+)\s', data).group(1)
+        except:
+            dict_data['profitable'] = '--'
         print(dict_data)
 
         return dict_data
@@ -308,23 +309,23 @@ class SnowBall(object):
     def finance_data_proc(self, data):
         finance_data = dict()
         for i in range(3, 39, 6):
-            finance_data[data[i]] = [[data[i + 1]], [data[i + 2]], [data[i + 3]], [data[i + 4]]]
+            finance_data[data[i]] = str([data[i + 1]][0] + "||" + [data[i + 2]][0] + "||" + [data[i + 3]][0] + "||" + [data[i + 4]][0])
             if data[i].__contains__('0' or '1' or '2' or '3' or '4' or '5' or '6' or '7' or '8' or '9'):
                 raise Exception("Finance data is incorrect!")
         for i in range(40, 70, 6):
-            finance_data[data[i]] = [[data[i + 1]], [data[i + 2]], [data[i + 3]], [data[i + 4]]]
+            finance_data[data[i]] = str([data[i + 1]][0] + "||" + [data[i + 2]][0] + "||" + [data[i + 3]][0] + "||" + [data[i + 4]][0])
             if data[i].__contains__('0' or '1' or '2' or '3' or '4' or '5' or '6' or '7' or '8' or '9'):
                 raise Exception("Finance data is incorrect!")
         for i in range(71, 107, 6):
-            finance_data[data[i]] = [[data[i + 1]], [data[i + 2]], [data[i + 3]], [data[i + 4]]]
+            finance_data[data[i]] = str([data[i + 1]][0] + "||" + [data[i + 2]][0] + "||" + [data[i + 3]][0] + "||" + [data[i + 4]][0])
             if data[i].__contains__('0' or '1' or '2' or '3' or '4' or '5' or '6' or '7' or '8' or '9'):
                 raise Exception("Finance data is incorrect!")
         for i in range(108, 150, 6):
-            finance_data[data[i]] = [[data[i + 1]], [data[i + 2]], [data[i + 3]], [data[i + 4]]]
+            finance_data[data[i]] = str([data[i + 1]][0] + "||" + [data[i + 2]][0] + "||" + [data[i + 3]][0] + "||" + [data[i + 4]][0])
             if data[i].__contains__('0' or '1' or '2' or '3' or '4' or '5' or '6' or '7' or '8' or '9'):
                 raise Exception("Finance data is incorrect!")
         for i in range(151, 217, 6):
-            finance_data[data[i]] = [[data[i + 1]], [data[i + 2]], [data[i + 3]], [data[i + 4]]]
+            finance_data[data[i]] = str([data[i + 1]][0] + "||" + [data[i + 2]][0] + "||" + [data[i + 3]][0] + "||" + [data[i + 4]][0])
             if data[i].__contains__('0' or '1' or '2' or '3' or '4' or '5' or '6' or '7' or '8' or '9'):
                 raise Exception("Finance data is incorrect!")
         print(finance_data)
@@ -340,7 +341,7 @@ class SnowBall(object):
         data = self._get_element(table).text.splitlines()
         print(data)
         new_data = self.finance_data_proc(data)
-        print(new_data)
+        # print(new_data)
         return new_data
 
 
@@ -417,18 +418,6 @@ class Excel(object):
 
     def save(self, filename):
         self.workbook.save(filename)
-
-class DB(object):
-
-    def __int__(self):
-        self.connection = sqlite3.connect('stock.db')
-
-    def execute_sql(self, sql):
-        return self.connection.cursor().execute(sql).fetchall()
-
-    def save(self):
-        self.connection.commit()
-
 
 def list_sum(L):
     sum = 0
@@ -543,76 +532,76 @@ def main(stock_list):
                 net_asset_value_per_share = basic_data['net_asset_value_per_share'],
                 # 盈利情况
                 profitable=basic_data['profitable'],
-                # # 营业收入
-                # operation_revenue = financial_data['营业收入'],
-                # # 营业收入同比增长
-                # Operating_income_increased_y_on_y = financial_data['营业收入同比增长'],
-                # # 净利润
-                # net_profits = financial_data['净利润'],
-                # # 净利润同比增长
-                # net_profit_growth = financial_data['净利润同比增长'],
-                # # 扣非净利润
-                # non_net_profit_withheld = financial_data['扣非净利润'],
-                # # 扣非净利润同比增长
-                # non_net_profit_growth_y_on_y = financial_data['扣非净利润同比增长'],
-                # # # 每股收益
-                # # earnings_per_share = financial_data['每股收益'],
-                # # 每股净资产
+                # 营业收入
+                operation_revenue = financial_data['营业收入'],
+                # 营业收入同比增长
+                operating_income_increased_y_on_y = financial_data['营业收入同比增长'],
+                # 净利润
+                net_profits = financial_data['净利润'],
+                # 净利润同比增长
+                net_profit_growth = financial_data['净利润同比增长'],
+                # 扣非净利润
+                non_net_profit_withheld = financial_data['扣非净利润'],
+                # 扣非净利润同比增长
+                non_net_profit_growth_y_on_y = financial_data['扣非净利润同比增长'],
+                # # 每股收益
+                # earnings_per_share = financial_data['每股收益'],
+                # 每股净资产
                 # net_asset_value_per_share = financial_data['每股净资产'],
-                # # 每股资本公积金
-                # capital_reserve_per_share = financial_data['每股资本公积金'],
-                # # 每股未分配利润
-                # undistributed_profit_per_share = financial_data['每股未分配利润'],
-                # # 每股经营现金流
-                # operating_cash_flow_per_share = financial_data['每股经营现金流'],
-                # # 净资产收益率
-                # net_assets_income_rate = financial_data['净资产收益率'],
-                # # 净资产收益率-摊薄
-                # return_on_equity_diluted = financial_data['净资产收益率-摊薄'],
-                # # 总资产报酬率\
-                # rate_of_return_on_total_assets = financial_data['总资产报酬率'],
-                # # 人力投入回报率 \
-                # rate_of_return_on_manpower_input = financial_data['人力投入回报率'],
-                # # 销售毛利率 \
-                # gross_margin = financial_data['销售毛利率'],
-                # # 销售净利率 \
-                # net_profit_margin_on_sales = financial_data['销售净利率'],
-                # # 资产负债率 \
-                # debt_to_assets_ratio = financial_data['资产负债率'],
-                # # 流动比率 \
-                # liquidity_ratio = financial_data['流动比率'],
-                # # '速动比率' \
-                # quick_ratio = financial_data['速动比率'],
-                # # 权益乘数
-                # equity_multiplier = financial_data['权益乘数'],
-                # # 产权比率
-                # equity_ratio = financial_data['产权比率'],
-                # # 股东权益比率
-                # investor_ratio = financial_data['股东权益比率'],
-                # # 现金流量比率
-                # Cash_flow_ratio = financial_data['现金流量比率'],
-                # # 存货周转天数
-                # days_sales_of_inventory = financial_data['存货周转天数'],
-                # # 应收账款周转天数
-                # days_sales_outstanding = financial_data['应收账款周转天数'],
-                # # 应付账款周转天数
-                # days_of_turnover_of_accounts_payable = financial_data['应付账款周转天数'],
-                # # 现金循环周期
-                # cash_cycle = financial_data['现金循环周期'],
-                # # 营业周期
-                # operating_cycle = financial_data['营业周期'],
-                # # 总资产周转率
-                # total_assets_turnover = financial_data['总资产周转率'],
-                # # 存货周转率
-                # inventory_turnover_ratio = financial_data['存货周转率'],
-                # # 应收账款周转率
-                # turnover_of_account_receivable = financial_data['应收账款周转率'],
-                # # 应付账款周转率
-                # turnover_ratio_of_account_payable = financial_data['应付账款周转率'],
-                # # 流动资产周转率
-                # velocity_of_liquid_assets = financial_data['流动资产周转率'],
-                # # 固定资产周转率
-                # turnover_of_fixed_assets = financial_data['固定资产周转率'],
+                # 每股资本公积金
+                capital_reserve_per_share = financial_data['每股资本公积金'],
+                # 每股未分配利润
+                undistributed_profit_per_share = financial_data['每股未分配利润'],
+                # 每股经营现金流
+                operating_cash_flow_per_share = financial_data['每股经营现金流'],
+                # 净资产收益率
+                net_assets_income_rate = financial_data['净资产收益率'],
+                # 净资产收益率-摊薄
+                return_on_equity_diluted = financial_data['净资产收益率-摊薄'],
+                # 总资产报酬率\
+                rate_of_return_on_total_assets = financial_data['总资产报酬率'],
+                # 人力投入回报率 \
+                rate_of_return_on_manpower_input = financial_data['人力投入回报率'],
+                # 销售毛利率 \
+                gross_margin = financial_data['销售毛利率'],
+                # 销售净利率 \
+                net_profit_margin_on_sales = financial_data['销售净利率'],
+                # 资产负债率 \
+                debt_to_assets_ratio = financial_data['资产负债率'],
+                # 流动比率 \
+                liquidity_ratio = financial_data['流动比率'],
+                # '速动比率' \
+                quick_ratio = financial_data['速动比率'],
+                # 权益乘数
+                equity_multiplier = financial_data['权益乘数'],
+                # 产权比率
+                equity_ratio = financial_data['产权比率'],
+                # 股东权益比率
+                investor_ratio = financial_data['股东权益比率'],
+                # 现金流量比率
+                cash_flow_ratio = financial_data['现金流量比率'],
+                # 存货周转天数
+                days_sales_of_inventory = financial_data['存货周转天数'],
+                # 应收账款周转天数
+                days_sales_outstanding = financial_data['应收账款周转天数'],
+                # 应付账款周转天数
+                days_of_turnover_of_accounts_payable = financial_data['应付账款周转天数'],
+                # 现金循环周期
+                cash_cycle = financial_data['现金循环周期'],
+                # 营业周期
+                operating_cycle = financial_data['营业周期'],
+                # 总资产周转率
+                total_assets_turnover = financial_data['总资产周转率'],
+                # 存货周转率
+                inventory_turnover_ratio = financial_data['存货周转率'],
+                # 应收账款周转率
+                turnover_of_account_receivable = financial_data['应收账款周转率'],
+                # 应付账款周转率
+                turnover_ratio_of_account_payable = financial_data['应付账款周转率'],
+                # 流动资产周转率
+                velocity_of_liquid_assets = financial_data['流动资产周转率'],
+                # 固定资产周转率
+                turnover_of_fixed_assets = financial_data['固定资产周转率'],
             )
             session.add(new_data_add_to_db)
             session.commit()
@@ -666,12 +655,12 @@ if __name__ == '__main__':
     # print('###############科创板结束###############')
     # exit(1)
 
-    # l = ['688399', '300206', '605123', '002352', '300853', '688289',
-    #      '002007', '300482', '688096', '002223', '688178', '002262',
-    #      '688088', '300487', '300136', '300628', '000333', '002415',
-    #      '300003', '688039', '601318', '688033',
-    #      ]
-    l = ['688096']
+    l = ['688399', '300206', '605123', '002352', '300853', '688289',
+         '002007', '300482', '688096', '002223', '688178', '002262',
+         '688088', '300487', '300136', '300628', '000333', '002415',
+         '300003', '688039', '601318', '688033',
+         ]
+    # l = ['688088', '300487', '300136', '300628', '000333', '002415',]
     # stock_filter(l)
     main(l)
     # exit(1)
