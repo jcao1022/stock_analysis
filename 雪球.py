@@ -14,7 +14,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.firefox.service import Service
-from webdriver_manager.firefox import GeckoDriverManager
+
 import xlwt
 from datetime import datetime
 import traceback
@@ -205,7 +205,7 @@ class SnowBall(object):
             ff_options = Options()
             ff_options.add_argument("--headless")
             exec_path = r'/usr/bin/firefox'
-            self.driver = webdriver.Firefox(executable_path=GeckoDriverManager(), options=ff_options)
+            self.driver = webdriver.Firefox(executable_path=exec_path, options=ff_options)
         self._get_source(url)
 
     def _get_source(self, url, sleep_time=2):
