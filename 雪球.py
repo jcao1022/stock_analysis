@@ -12,6 +12,8 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 import random
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
+
 import xlwt
 from datetime import datetime
 import traceback
@@ -27,7 +29,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
 engine = create_engine('sqlite:///my_stock.db')
-Base = declarative_base()
+Base = sqlalchemy.orm.declarative_base()
 Session = sessionmaker(bind=engine)
 session = Session()
 from sqlalchemy import Column, Integer, String, Float, DateTime, Date
@@ -157,6 +159,14 @@ class SnowBall(object):
     # DRIVER = r'/usr/local/bin/phantomjs'
     DRIVER = r'phantomjs-2.1.1-windows\bin\phantomjs.exe'
     SERVICE_ARGS = ['--load-images=false', '--proxy-type=None', '--ignore-ssl-errors=true', '--ssl-protocol=tlsv1']
+    chrome_options = Options()
+    # chrome_options.add_argument("--disable-extensions")
+    # chrome_options.add_argument("--disable-gpu")
+    # chrome_options.add_argument("--no-sandbox") # linux only
+    chrome_options.add_argument("--headless=new")  # for Chrome >= 109
+    # chrome_options.add_argument("--headless")
+    # chrome_options.headless = True # also works
+
     USER_AGENTS = [
         # "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; AcooBrowser; .NET CLR 1.1.4322; .NET CLR 2.0.50727)",
         # "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0; Acoo Browser; SLCC1; .NET CLR 2.0.50727; Media Center PC 5.0; .NET CLR 3.0.04506)",
@@ -186,7 +196,7 @@ class SnowBall(object):
         if browser == 'p':
             self.driver = webdriver.PhantomJS(self.DRIVER, service_args=self.SERVICE_ARGS, desired_capabilities=self.DCAP)
         if browser == 'c':
-            self.driver = webdriver.Chrome()
+            self.driver = webdriver.Chrome(options=self.chrome_options, service_args=self.SERVICE_ARGS)
         self._get_source(url)
 
     def _get_source(self, url, sleep_time=2):
