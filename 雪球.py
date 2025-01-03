@@ -195,13 +195,14 @@ class SnowBall(object):
             # chrome_options.add_argument("--disable-extensions")
             # chrome_options.add_argument("--disable-gpu")
             # chrome_options.add_argument("--no-sandbox") # linux only
-            chrome_options.add_argument("--headless=new")  # for Chrome >= 109
+            chrome_options.add_argument("--headless")  # for Chrome >= 109
             # chrome_options.add_argument("--headless")
             # chrome_options.headless = True # also works
-            self.driver = webdriver.Chrome(options=chrome_options, service_args=self.SERVICE_ARGS)
+            DRIVER = r'/usr/bin/google-chrome'
+            self.driver = webdriver.Chrome(options=chrome_options, service_args=self.SERVICE_ARGS, executable_path=DRIVER)
         if browser == 'ff':
             ff_options = Options()
-            ff_options.add_argument("--headless=new")
+            ff_options.add_argument("--headless")
             exec_path = r'/usr/bin/firefox'
             self.driver = webdriver.Firefox(options=ff_options, executable_path=exec_path)
         self._get_source(url)
