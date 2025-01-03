@@ -188,7 +188,7 @@ class SnowBall(object):
         if browser == 'p':
             #DRIVER = r'/usr/local/bin/phantomjs'
             #DRIVER = r'phantomjs-2.1.1-windows\bin\phantomjs.exe'
-            DRIVER = r'/root/tmp/sw/phantomjs-2.1.1-linux-x86_64/bin'
+            DRIVER = r'/root/tmp/sw/phantomjs-2.1.1-linux-x86_64/bin/phantomjs'
             self.driver = webdriver.PhantomJS(DRIVER, service_args=self.SERVICE_ARGS, desired_capabilities=self.DCAP)
         if browser == 'c':
             chrome_options = Options()
@@ -505,7 +505,7 @@ def main(stock_list):
             basic_data = basic.basic_info(stock_code)
             basic.close()
 
-            finance = SnowBall(CW, 'c')
+            finance = SnowBall(CW, 'ff')
             print(CW)
             financial_data = finance.financial(stock_code)
             finance.close()
