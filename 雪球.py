@@ -156,17 +156,8 @@ class Stock(Base):
 Base.metadata.create_all(engine)
 
 class SnowBall(object):
-    # DRIVER = r'/usr/local/bin/phantomjs'
-    #DRIVER = r'phantomjs-2.1.1-windows\bin\phantomjs.exe'
-    DRIVER = r'/root/tmp/sw/phantomjs-2.1.1-linux-x86_64/bin'
+
     SERVICE_ARGS = ['--load-images=false', '--proxy-type=None', '--ignore-ssl-errors=true', '--ssl-protocol=tlsv1']
-    chrome_options = Options()
-    # chrome_options.add_argument("--disable-extensions")
-    # chrome_options.add_argument("--disable-gpu")
-    # chrome_options.add_argument("--no-sandbox") # linux only
-    chrome_options.add_argument("--headless=new")  # for Chrome >= 109
-    # chrome_options.add_argument("--headless")
-    # chrome_options.headless = True # also works
 
     USER_AGENTS = [
         # "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; AcooBrowser; .NET CLR 1.1.4322; .NET CLR 2.0.50727)",
@@ -195,9 +186,24 @@ class SnowBall(object):
 
     def __init__(self, url, browser='p'):
         if browser == 'p':
-            self.driver = webdriver.PhantomJS(self.DRIVER, service_args=self.SERVICE_ARGS, desired_capabilities=self.DCAP)
+            #DRIVER = r'/usr/local/bin/phantomjs'
+            #DRIVER = r'phantomjs-2.1.1-windows\bin\phantomjs.exe'
+            DRIVER = r'/root/tmp/sw/phantomjs-2.1.1-linux-x86_64/bin'
+            self.driver = webdriver.PhantomJS(DRIVER, service_args=self.SERVICE_ARGS, desired_capabilities=self.DCAP)
         if browser == 'c':
-            self.driver = webdriver.Chrome(options=self.chrome_options, service_args=self.SERVICE_ARGS)
+            chrome_options = Options()
+            # chrome_options.add_argument("--disable-extensions")
+            # chrome_options.add_argument("--disable-gpu")
+            # chrome_options.add_argument("--no-sandbox") # linux only
+            chrome_options.add_argument("--headless=new")  # for Chrome >= 109
+            # chrome_options.add_argument("--headless")
+            # chrome_options.headless = True # also works
+            self.driver = webdriver.Chrome(options=chrome_options, service_args=self.SERVICE_ARGS)
+        if browser == 'ff':
+            ff_options = Options()
+            ff_options.headless = True
+            exec_path = r'/usr/bin/firefox'
+            self.driver = webdriver.Firefox(options=ff_options, executable_path=exec_path, service_args=self.SERVICE_ARGS)
         self._get_source(url)
 
     def _get_source(self, url, sleep_time=2):
