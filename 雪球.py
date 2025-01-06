@@ -205,7 +205,7 @@ class SnowBall(object):
             ff_options = Options()
             ff_options.add_argument("--headless")
             exec_path = r'/usr/bin/firefox'
-            self.driver = webdriver.Firefox(executable_path=exec_path, options=ff_options)
+            self.driver = webdriver.Firefox(executable_path=exec_path, firefox_options=ff_options)
         self._get_source(url)
 
     def _get_source(self, url, sleep_time=2):
